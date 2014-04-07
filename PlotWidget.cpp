@@ -378,25 +378,6 @@ void PlotWindow::mousePressEvent(QMouseEvent * event)
         }
     }
 
-    m_Rot.isPressed = false;
-    m_Rot.x = 0;
-    m_Rot.y = 0;
-
-    m_ScaleX.isPressed = false;
-    m_ScaleX.x = 0;
-    m_ScaleX.y = 0;
-
-    m_ScaleY.isPressed = false;
-    m_ScaleY.x = 0;
-    m_ScaleY.y = 0;
-
-    if(m_EditMode == COMPONENT_EDITOR)
-    {
-        m_Offset.isPressed = false;
-        m_Offset.x = 0;
-        m_Offset.y = 0;
-    }
-
     m_Selection = -1;
     m_SelectionPressed = false;
 
@@ -417,23 +398,13 @@ void PlotWindow::mouseMoveEvent(QMouseEvent * event)
                 m_Points[m_Selection].first.x = event->x() /static_cast<float>(width());
                 m_Points[m_Selection].first.y = event->y() /static_cast<float>(height());
 
-                m_Rot.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot + 3*PI/2);
-                m_Rot.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot + 3*PI/2);
-
-                m_ScaleX.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  0);
-                m_ScaleX.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  0);
-
-                m_ScaleY.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI/2);
-                m_ScaleY.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI/2);
-
                 if(m_EditMode == COMPONENT_EDITOR)
                 {
-                    m_Offset.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI);
-                    m_Offset.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI);
-
                     m_Points[m_Selection].second.x = m_Points[m_Selection].first.x;
                     m_Points[m_Selection].second.y = m_Points[m_Selection].first.y;
                 }
+
+                updateHandles();
             }
             else if(m_Rot.isPressed)
             {
@@ -453,19 +424,12 @@ void PlotWindow::mouseMoveEvent(QMouseEvent * event)
                     m_Points[m_Selection].first.rot = -atan((m_Rot.x - m_Points[m_Selection].first.x)/
                                                    (m_Rot.y - m_Points[m_Selection].first.y)) + 2*PI;
 
-                m_ScaleX.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  0);
-                m_ScaleX.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  0);
-
-                m_ScaleY.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI/2);
-                m_ScaleY.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI/2);
-
-                m_Offset.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI);
-                m_Offset.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI);
-
                 if(m_EditMode == COMPONENT_EDITOR)
                 {
                     m_Points[m_Selection].second.rot = m_Points[m_Selection].first.rot;
                 }
+
+                updateHandles();
             }
             else if(m_ScaleX.isPressed)
             {
@@ -504,9 +468,19 @@ void PlotWindow::mouseMoveEvent(QMouseEvent * event)
                     m_ScaleX.y += deltaY;
                 }
 
+                m_Rot.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot + 3*PI/2);
+                m_Rot.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot + 3*PI/2);
+
+                m_ScaleY.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI/2);
+                m_ScaleY.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI/2);
+
                 if(m_EditMode == COMPONENT_EDITOR)
                 {
-                    m_Points[m_Selection].second.width = m_Points[m_Selection].second.width;
+                    m_Offset.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI);
+                    m_Offset.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI);
+
+
+                    m_Points[m_Selection].second.width = m_Points[m_Selection].first.width;
                 }
             }
             else if(m_ScaleY.isPressed)
@@ -546,8 +520,17 @@ void PlotWindow::mouseMoveEvent(QMouseEvent * event)
                     m_ScaleY.y += deltaY;
                 }
 
+                m_Rot.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot + 3*PI/2);
+                m_Rot.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot + 3*PI/2);
+
+                m_ScaleX.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  0);
+                m_ScaleX.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  0);
+
                 if(m_EditMode == COMPONENT_EDITOR)
                 {
+                    m_Offset.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI);
+                    m_Offset.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI);
+
                     m_Points[m_Selection].second.length = m_Points[m_Selection].first.length;
                 }
             }
@@ -565,8 +548,6 @@ void PlotWindow::mouseMoveEvent(QMouseEvent * event)
 
 void PlotWindow::mouseReleaseEvent(QMouseEvent *)
 {
-    float handleDist = handleDistP / static_cast<float>(width());
-
     m_Rot.isPressed = false;
     m_Rot.color.setRgbF(1.0f, 0.0f, 0.0f);
     m_ScaleX.isPressed = false;
@@ -577,23 +558,7 @@ void PlotWindow::mouseReleaseEvent(QMouseEvent *)
     m_Offset.color.setRgbF(1.0f, 1.0f, 0.0f);
     m_SelectionPressed = false;
 
-    if(m_Selection != -1)
-    {
-        m_Rot.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot + 3*PI/2);
-        m_Rot.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot + 3*PI/2);
-
-        m_ScaleX.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  0);
-        m_ScaleX.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  0);
-
-        m_ScaleY.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI/2);
-        m_ScaleY.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI/2);
-
-        if(m_EditMode == COMPONENT_EDITOR)
-        {
-            m_Offset.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI);
-            m_Offset.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI);
-        }
-    }
+    updateHandles();
 }
 
 void PlotWindow::keyPressEvent(QKeyEvent * event)
@@ -605,6 +570,8 @@ void PlotWindow::keyPressEvent(QKeyEvent * event)
             auto it = m_Points.begin() + m_Selection;
             m_Points.erase(it);
         }
+
+        updateHandles();
     }
     else if(event->key() == Qt::Key_Return)
     {
@@ -759,50 +726,74 @@ void PlotWindow::setTime(float time)
             }
         }
 
-        if(m_Selection != -1)
-        {
-            m_Rot.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot + 3*PI/2);
-            m_Rot.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot + 3*PI/2);
-
-            m_ScaleX.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  0);
-            m_ScaleX.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  0);
-
-            m_ScaleY.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI/2);
-            m_ScaleY.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI/2);
-
-            m_Offset.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI);
-            m_Offset.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI);
-        }
+        updateHandles();
     }
 
 }
 
 void PlotWindow::setEditMode(EDITOR_MODE mode)
 {
-    float handleDist = handleDistP / static_cast<float>(width());
     m_EditMode = mode;
 
-    for(uint i = 0; i < m_Points.size(); i++)
+    if(mode == ANIM_EDITOR)
     {
-        m_Points[i].first.x = m_Points[i].second.x;
-        m_Points[i].first.y = m_Points[i].second.y;
-        m_Points[i].first.rot = m_Points[i].second.rot;
-        m_Points[i].first.length = m_Points[i].second.length;
-        m_Points[i].first.width = m_Points[i].second.width;
-
-        if(m_Selection != -1)
+        for(uint i = 0; i < m_Points.size(); i++)
         {
-            m_Rot.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot + 3*PI/2);
-            m_Rot.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot + 3*PI/2);
+            m_Points[i].first.x = m_Points[i].second.x;
+            m_Points[i].first.y = m_Points[i].second.y;
+            m_Points[i].first.rot = m_Points[i].second.rot;
+            m_Points[i].first.length = m_Points[i].second.length;
+            m_Points[i].first.width = m_Points[i].second.width;
+            m_Points[i].first.texSX = m_Points[i].second.texSX;
+            m_Points[i].first.texSY = m_Points[i].second.texSY;
+            m_Points[i].first.texEX = m_Points[i].second.texEX;
+            m_Points[i].first.texEY = m_Points[i].second.texEY;
 
-            m_ScaleX.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  0);
-            m_ScaleX.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  0);
 
-            m_ScaleY.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI/2);
-            m_ScaleY.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI/2);
+        }
 
+        emit selectionChanged();
+        updateHandles();
+    }
+}
+
+void PlotWindow::updateHandles()
+{
+    float handleDist = handleDistP / static_cast<float>(width());
+
+    if(m_Selection != -1)
+    {
+        m_Rot.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot + 3*PI/2);
+        m_Rot.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot + 3*PI/2);
+
+        m_ScaleX.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  0);
+        m_ScaleX.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  0);
+
+        m_ScaleY.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI/2);
+        m_ScaleY.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI/2);
+
+        if(m_EditMode == COMPONENT_EDITOR)
+        {
             m_Offset.x = m_Points[m_Selection].first.x + handleDist * cos(m_Points[m_Selection].first.rot +  PI);
             m_Offset.y = m_Points[m_Selection].first.y + handleDist * sin(m_Points[m_Selection].first.rot +  PI);
         }
+    }
+    else
+    {
+        m_Rot.isPressed = false;
+        m_Rot.x = 0;
+        m_Rot.y = 0;
+
+        m_ScaleX.isPressed = false;
+        m_ScaleX.x = 0;
+        m_ScaleX.y = 0;
+
+        m_ScaleY.isPressed = false;
+        m_ScaleY.x = 0;
+        m_ScaleY.y = 0;
+
+        m_Offset.isPressed = false;
+        m_Offset.x = 0;
+        m_Offset.y = 0;
     }
 }

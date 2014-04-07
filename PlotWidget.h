@@ -52,6 +52,20 @@ public:
 
     ~PlotWindow();
 
+
+
+public slots:
+    void draw();
+
+    void setTime(float);
+
+    void setEditMode(EDITOR_MODE mode);
+
+signals:
+    void selectionChanged();
+
+    void setSelection(int);
+
 private:
     void mousePressEvent(QMouseEvent *);
 
@@ -65,17 +79,7 @@ private:
 
     void resizeEvent(QResizeEvent*);
 
-public slots:
-    void draw();
-
-    void setTime(float);
-
-    void setEditMode(EDITOR_MODE mode);
-
-signals:
-    void selectionChanged();
-
-    void setSelection(int);
+    void updateHandles();
 
 private:
     float m_CurrentTime;

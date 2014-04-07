@@ -76,6 +76,12 @@ void TextureViewer::mousePressEvent(QMouseEvent * event)
 
             m_Points[m_Selection].first.texSX = m_Points[m_Selection].first.texEX = event->x() / static_cast<float>(rect.width());
             m_Points[m_Selection].first.texSY = m_Points[m_Selection].first.texEY = event->y() / static_cast<float>(rect.height());
+
+            m_Points[m_Selection].second.texSX = m_Points[m_Selection].first.texSX;
+            m_Points[m_Selection].second.texSY = m_Points[m_Selection].first.texSY;
+            m_Points[m_Selection].second.texEX = m_Points[m_Selection].first.texEX;
+            m_Points[m_Selection].second.texEY = m_Points[m_Selection].first.texEY;
+
         }
         emit updateSelection();
     }
@@ -103,8 +109,8 @@ void TextureViewer::mouseMoveEvent(QMouseEvent * event)
         if(event->x() > m_Points[m_Selection].first.texSX * rect.width() && event->x() < rect.width() &&
            event->y() > m_Points[m_Selection].first.texSY * rect.height() && event->y() < rect.height() && m_isSelection)
         {
-            m_Points[m_Selection].first.texEX = event->x() / static_cast<float>(rect.width());
-            m_Points[m_Selection].first.texEY = event->y() / static_cast<float>(rect.height());
+            m_Points[m_Selection].first.texEX = m_Points[m_Selection].second.texEX = event->x() / static_cast<float>(rect.width());
+            m_Points[m_Selection].first.texEY = m_Points[m_Selection].second.texEY = event->y() / static_cast<float>(rect.height());
         }
         emit updateSelection();
     }
