@@ -73,4 +73,7 @@ AnimationWidget::AnimationWidget(std::vector<std::pair<Point, vanim::comp> > & p
 
     connect(m_ColorMode, SIGNAL(pressed()),
             this, SLOT(setColorKeyMode()));
+
+    connect(m_Play, SIGNAL(pressed()),
+            this, SLOT(propPlay()));
 }

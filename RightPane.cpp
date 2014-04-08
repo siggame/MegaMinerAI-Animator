@@ -34,8 +34,11 @@ RightPane::RightPane(std::vector<std::pair<Point, vanim::comp> >& points,
     connect(m_AnimEditMode, SIGNAL(pressed()),
             this, SLOT(setAnimationMode()));
 
-    connect(m_AnimWidget, SIGNAL(keyframeModeChanged(AnimationWidget::KEYFRAME_MODE)),
-            this, SLOT(propKeyframeModeChange(AnimationWidget::KEYFRAME_MODE)));
+    connect(m_AnimWidget, SIGNAL(keyframeModeChanged(KEYFRAME_MODE)),
+            this, SLOT(propKeyframeModeChange(KEYFRAME_MODE)));
+
+    connect(m_AnimWidget, SIGNAL(play(float)),
+            this, SLOT(propPlay(float)));
 
     m_AnimWidget->hide();
 

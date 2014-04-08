@@ -4,8 +4,8 @@
 SelectionForm::SelectionForm(std::vector<std::pair<Point, vanim::comp> >& points,
                              QWidget *parent) :
     QWidget(parent),
-    m_Selection(-1),
-    m_Points(points)
+    m_Points(points),
+    m_Selection(-1)
 {
     m_Layout = new QGridLayout(this);
 

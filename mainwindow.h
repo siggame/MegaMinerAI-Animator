@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
 #include "CentralPane.h"
 #include "RightPane.h"
 #include "TextureViewer.h"
@@ -37,9 +39,25 @@ public slots:
 
     void propEditModeChange(EDITOR_MODE);
 
-    void keyframeModeChanged(AnimationWidget::KEYFRAME_MODE mode)
+    void keyframeModeChanged(KEYFRAME_MODE mode)
     {
         m_CenterPane->setKeyFrameEditMode(mode);
+    }
+
+    void NewAnim()
+    {
+    }
+
+    void SaveAnim()
+    {
+    }
+
+    void OpenAnim()
+    {
+    }
+
+    void Exit()
+    {
     }
 
 public:
@@ -62,6 +80,9 @@ public:
 private:
     MainWidget * m_MainWidget;
     TextureViewer * m_TextureWidget;
+
+    QMenu * m_File;
+    QMenu * m_View;
 };
 
 #endif

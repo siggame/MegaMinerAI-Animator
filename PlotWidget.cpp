@@ -29,7 +29,8 @@ PlotWindow::PlotWindow(std::vector<std::pair<Point, vanim::comp> >& vec, QWindow
     QWindow(parent),
     m_Points(vec),
     m_Selection(-1),
-    m_EditMode(COMPONENT_EDITOR)
+    m_EditMode(COMPONENT_EDITOR),
+    m_KeyframeSelection(-1)
 {
     this->setSurfaceType(OpenGLSurface);
 
@@ -404,6 +405,14 @@ void PlotWindow::mouseMoveEvent(QMouseEvent * event)
                     m_Points[m_Selection].second.y = m_Points[m_Selection].first.y;
                 }
 
+                if(m_KeyframeMode == TRANS_KEYS &&
+                   m_KeyframeSelection != -1)
+                {
+                    std::vector<vanim::comp::TranslateDelta>& transKeys = m_Points[m_Selection].second.m_TranslateDeltas;
+                    transKeys[m_KeyframeSelection].x = m_Points[m_Selection].first.x;
+                    transKeys[m_KeyframeSelection].y = m_Points[m_Selection].first.y;
+                }
+
                 updateHandles();
             }
             else if(m_Rot.isPressed)
@@ -565,10 +574,13 @@ void PlotWindow::keyPressEvent(QKeyEvent * event)
 {
     if(event->key() == Qt::Key_Delete)
     {
-        if(m_Selection != -1)
+        if(m_Selection != -1 && m_KeyframeSelection == -1)
         {
             auto it = m_Points.begin() + m_Selection;
             m_Points.erase(it);
+
+            m_Selection = -1;
+            emit setSelection(m_Selection);
         }
 
         updateHandles();
@@ -580,12 +592,10 @@ void PlotWindow::keyPressEvent(QKeyEvent * event)
             std::vector<vanim::comp::TranslateDelta> & transDeltas =  m_Points[m_Selection].second.m_TranslateDeltas;
             if(transDeltas.empty())
             {
-                qDebug() << "here " << m_CurrentTime;
                 if(m_CurrentTime > 0.0f && (m_Points[m_Selection].first.x != m_Points[m_Selection].second.x ||
                                             m_Points[m_Selection].first.y != m_Points[m_Selection].second.y))
                 {
                     transDeltas.emplace_back(m_CurrentTime, m_Points[m_Selection].first.x, m_Points[m_Selection].first.y);
-                    qDebug() << "added " << m_CurrentTime;
                 }
             }
             else
@@ -595,27 +605,17 @@ void PlotWindow::keyPressEvent(QKeyEvent * event)
                     auto next = std::next(it, 1);
                     if(m_CurrentTime < (*it).time)
                     {
-                        qDebug() << "made";
                         transDeltas.insert(it, {m_CurrentTime, m_Points[m_Selection].first.x, m_Points[m_Selection].first.y});
                         break;
                     }
 
                     if(next == transDeltas.end() && m_CurrentTime > (*it).time)
                     {
-                        qDebug() << "made";
                         transDeltas.emplace_back(m_CurrentTime, m_Points[m_Selection].first.x, m_Points[m_Selection].first.y);
                         break;
                     }
                 }
             }
-
-
-            for(uint i = 0; i < transDeltas.size(); i++)
-            {
-                qDebug() << "key " << i << ":" <<  transDeltas[i].time << "  " << transDeltas[i].x << "  " << transDeltas[i].y;
-            }
-            qDebug() << endl;
-
 
             std::vector<vanim::comp::RotateDelta> & rotateDeltas = m_Points[m_Selection].second.m_RotateDeltas;
             if(rotateDeltas.empty())
@@ -641,11 +641,6 @@ void PlotWindow::keyPressEvent(QKeyEvent * event)
                         break;
                     }
                 }
-            }
-
-            for(uint i = 0; i < rotateDeltas.size(); i++)
-            {
-                qDebug() << "key " << i << ":" << rotateDeltas[i].time << "  " << rotateDeltas[i].rot;
             }
 
             std::vector<vanim::comp::ScaleDelta> & scaleDeltas = m_Points[m_Selection].second.m_ScaleDeltas;
@@ -677,7 +672,9 @@ void PlotWindow::keyPressEvent(QKeyEvent * event)
 
             emit selectionChanged();
         }
-    }
+    }\
+
+    QWindow::keyPressEvent(event);
 }
 
 void PlotWindow::setTime(float time)
@@ -714,7 +711,6 @@ void PlotWindow::setTime(float time)
 
                         if(m_CurrentTime >= (*it).time && m_CurrentTime < (*next).time)
                         {
-                            qDebug() << m_CurrentTime / ((*next).time - (*it).time);
                             x = (((*next).x - (*it).x) * ((m_CurrentTime - (*it).time)/ ((*next).time - (*it).time))) + (*it).x;
                             y = (((*next).y - (*it).y) * ((m_CurrentTime - (*it).time)/ ((*next).time - (*it).time))) + (*it).y;
                             break;
@@ -724,9 +720,11 @@ void PlotWindow::setTime(float time)
                 m_Points[i].first.x = x;
                 m_Points[i].first.y = y;
             }
+
         }
 
         updateHandles();
+        emit selectionChanged();
     }
 
 }

@@ -32,6 +32,13 @@ CentralPane::CentralPane(std::vector<std::pair<Point, vanim::comp> >& points,
 
     connect(m_PlotWindow, SIGNAL(setSelection(int)),
             m_Timeline, SLOT(setSelection(int)));
+
+    connect(m_Timeline, SIGNAL(setKeyframeSelection(int)),
+            m_PlotWindow, SLOT(setKeyframeSelection(int)));
+
+    connect(m_PlotWindow, SIGNAL(propKeyframeSelection(int)),
+            m_Timeline, SLOT(setKeyframeSelect(int)));
+
 }
 
 QSize CentralPane::minimumSizeHint() const

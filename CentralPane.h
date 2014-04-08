@@ -35,9 +35,15 @@ public slots:
         m_PlotWindow->setEditMode(mode);
     }
 
-    void setKeyFrameEditMode(AnimationWidget::KEYFRAME_MODE mode)
+    void setKeyFrameEditMode(KEYFRAME_MODE mode)
     {
+        m_PlotWindow->setKeyFrameMode(mode);
         m_Timeline->setKeyFrameMode(mode);
+    }
+
+    void play(float d)
+    {
+        m_Timeline->play(d);
     }
 
 private slots:

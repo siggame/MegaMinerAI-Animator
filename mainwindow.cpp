@@ -15,6 +15,16 @@ MainWindow::MainWindow()
     connect(m_TextureWidget, SIGNAL(updateSelection()),
             m_MainWidget, SLOT(propSelectionChange()));
 
+    m_File = menuBar()->addMenu("File");
+    m_File->addAction("New");
+    m_File->addAction("Open");
+    m_File->addAction("Save");
+    m_File->addAction("Save As ...");
+    m_File->addAction("Exit");
+
+    m_View = menuBar()->addMenu("View");
+    m_View->addAction("Texture Viewer");
+
     setCentralWidget(m_MainWidget);
 }
 
@@ -49,10 +59,12 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(m_RightPane, SIGNAL(editModeChanged(EDITOR_MODE)),
             m_CenterPane, SLOT(setEditMode(EDITOR_MODE)));
 
-    connect(m_RightPane, SIGNAL(keyframeModeChanged(AnimationWidget::KEYFRAME_MODE)),
-            m_CenterPane, SLOT(setKeyFrameEditMode(AnimationWidget::KEYFRAME_MODE)));
+    connect(m_RightPane, SIGNAL(keyframeModeChanged(KEYFRAME_MODE)),
+            m_CenterPane, SLOT(setKeyFrameEditMode(KEYFRAME_MODE)));
 
-    setLayout(m_Layout);
+    connect(m_RightPane, SIGNAL(play(float)),
+            m_CenterPane, SLOT(play(float)));
+
 }
 
 QSize MainWidget::sizeHint() const

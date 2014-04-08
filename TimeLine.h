@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QTextStream>
+#include <QTimer>
+#include <QElapsedTimer>
 #include "PlotWidget.h"
 #include "AnimationWidget.h"
 #include "common.h"
@@ -24,6 +26,10 @@ public:
 
     void mousePressEvent(QMouseEvent * event);
 
+    void mouseReleaseEvent(QMouseEvent *);
+
+    void keyPressEvent(QKeyEvent *);
+
     void resizeEvent(QResizeEvent * event);
 
     QSize sizeHint() const;
@@ -33,10 +39,14 @@ public:
 signals:
     void timeChanged(float);
 
+    void setKeyframeSelection(int);
+
 public slots:
     void setSelection(int index)
     {
         m_Selection = index;
+        m_KeyframeSelection = -1;
+        repaint();
     }
 
     void updateSelection()
@@ -44,18 +54,39 @@ public slots:
         repaint();
     }
 
-    void setKeyFrameMode(AnimationWidget::KEYFRAME_MODE mode)
+    void setKeyFrameMode(KEYFRAME_MODE mode)
     {
         m_CurrentKeyframeMode = mode;
         repaint();
     }
 
+    void setKeyframeSelect(int)
+    {
+        m_KeyframeSelection = -1;
+        emit setKeyframeSelection(-1);
+    }
+
+    void play(float secs);
+
+    void stop();
+
+    void reset();
+
+private slots:
+    void updateTime();
+
 private:
-    AnimationWidget::KEYFRAME_MODE m_CurrentKeyframeMode;
+    KEYFRAME_MODE m_CurrentKeyframeMode;
     std::vector<std::pair<Point, vanim::comp> > & m_Points;
     int m_Selection;
+    int m_KeyframeSelection;
+    bool m_KeyframePressed;
     QRect xSelect;
     QColor m_LineColor;
+    QTimer m_Refresher;
+    QTimer m_Player;
+    QElapsedTimer m_ElapsedTime;
+    float m_Duration;
 };
 
 #endif // TIMELINE_H

@@ -61,10 +61,22 @@ public slots:
 
     void setEditMode(EDITOR_MODE mode);
 
+    void setKeyFrameMode(KEYFRAME_MODE mode)
+    {
+        m_KeyframeMode = mode;
+    }
+
+    void setKeyframeSelection(int k)
+    {
+        m_KeyframeSelection = k;
+    }
+
 signals:
     void selectionChanged();
 
     void setSelection(int);
+
+    void propKeyframeSelection(int k);
 
 private:
     void mousePressEvent(QMouseEvent *);
@@ -98,6 +110,8 @@ private:
     QTimer * m_Timer;
     uint m_PointTexture;
     EDITOR_MODE m_EditMode;
+    KEYFRAME_MODE m_KeyframeMode;
+    int m_KeyframeSelection;
 };
 
 #endif // PLOTWIDGET_H

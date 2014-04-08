@@ -8,6 +8,7 @@
 #include <QTableWidget>
 #include <QLineEdit>
 #include <QLabel>
+#include "vanim.h"
 #include "PlotWidget.h"
 #include "common.h"
 
@@ -15,13 +16,13 @@ class AnimationWidget : public QWidget
 {
     Q_OBJECT
 public:
-    enum KEYFRAME_MODE{TRANS_KEYS, ROTATE_KEYS, SCALE_KEYS, COLOR_KEYS};
-
     explicit AnimationWidget(std::vector<std::pair<Point, vanim::comp> > &, QWidget *parent = 0);
 
 
 signals:
-    void keyframeModeChanged(AnimationWidget::KEYFRAME_MODE);
+    void keyframeModeChanged(KEYFRAME_MODE);
+
+    void play(float secs);
 
 public slots:
     void setSelection(int select)
@@ -52,6 +53,14 @@ private slots:
     {
         m_KeyframeMode = COLOR_KEYS;
         emit keyframeModeChanged(m_KeyframeMode);
+    }
+
+    void propPlay()
+    {
+        QString str;
+        QTextStream stream(&str);
+        stream << m_Duration->text();
+        emit play(str.toFloat());
     }
 
 public:

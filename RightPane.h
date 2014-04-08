@@ -24,7 +24,9 @@ signals:
 
     void editModeChanged(EDITOR_MODE);
 
-    void keyframeModeChanged(AnimationWidget::KEYFRAME_MODE);
+    void keyframeModeChanged(KEYFRAME_MODE);
+
+    void play(float);
 
 public slots:
     void propSelectionChange()
@@ -32,7 +34,7 @@ public slots:
         emit selectionChanged();
     }
 
-    void propKeyframeModeChange(AnimationWidget::KEYFRAME_MODE mode)
+    void propKeyframeModeChange(KEYFRAME_MODE mode)
     {
         emit keyframeModeChanged(mode);
     }
@@ -59,6 +61,12 @@ public slots:
     {
         m_AnimWidget->show();
         emit editModeChanged(ANIM_EDITOR);
+    }
+
+private slots:
+    void propPlay(float duration)
+    {
+        emit play(duration);
     }
 
 private:
