@@ -4,3 +4,8 @@ moc_*.*
 *.pro.user.2.7pre1
 Makefile
 MegaMinerAI-Animator
+*.Debug
+*.Release
+*.pro.user.3.0-pre1
+debug/
+release/
