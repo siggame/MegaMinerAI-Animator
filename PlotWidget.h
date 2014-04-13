@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QDebug>
 #include <cmath>
+#include <iostream>
 #include "vanim.h"
 #include "common.h"
 

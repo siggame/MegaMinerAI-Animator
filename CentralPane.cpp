@@ -6,10 +6,13 @@ CentralPane::CentralPane(std::vector<std::pair<Point, vanim::comp> >& points,
     m_Points(points),
     m_Selection(-1)
 {
+
+
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     m_Layout = new QVBoxLayout(this);
     m_PlotWindow = new PlotWindow(points);
+
     m_PlotWidget = new PlotWidget(QWidget::createWindowContainer(m_PlotWindow, this), this);
     m_Timeline = new TimeLine(points, this);
 

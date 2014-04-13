@@ -2,6 +2,7 @@
 #define CENTRALPANE_H
 
 #include <QVBoxLayout>
+#include <iostream>
 #include "PlotWidget.h"
 #include "TimeLine.h"
 #include "AnimationWidget.h"

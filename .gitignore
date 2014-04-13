@@ -1,0 +1,6 @@
+*.o
+moc_*.*
+*.pro.user
+*.pro.user.2.7pre1
+Makefile
+MegaMinerAI-Animator

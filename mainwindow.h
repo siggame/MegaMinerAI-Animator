@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
+#include <iostream>
 #include "CentralPane.h"
 #include "RightPane.h"
 #include "TextureViewer.h"

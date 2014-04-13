@@ -9,11 +9,15 @@ MainWindow::MainWindow()
     m_TextureWidget->loadTexture("point.png");
     m_TextureWidget->show();
 
+
+
     connect(m_MainWidget, SIGNAL(setSelection(int)),
             m_TextureWidget, SLOT(setSelection(int)));
 
     connect(m_TextureWidget, SIGNAL(updateSelection()),
             m_MainWidget, SLOT(propSelectionChange()));
+
+
 
     m_File = menuBar()->addMenu("File");
     m_File->addAction("New");
@@ -36,6 +40,7 @@ MainWindow::~MainWindow()
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent)
 {
+
     m_Layout = new QHBoxLayout(this);
 
     m_CenterPane = new CentralPane(m_Points, this);

@@ -39,22 +39,36 @@ PlotWindow::PlotWindow(std::vector<std::pair<Point, vanim::comp> >& vec, QWindow
     format.setMajorVersion(3);
     format.setMinorVersion(0);
     format.setSamples(4);
-    format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setProfile(QSurfaceFormat::NoProfile);
     this->setFormat(format);
     this->create();
 
     m_Context = new QOpenGLContext;
     m_Context->setFormat(format);
-    m_Context->create();
+
+    if(!m_Context->create())
+    {
+        qDebug() << "Failed to Initialize OpenGL : 1";
+
+        exit(1);
+    }
+
+    qDebug() << "OpenGL Info:";
+    format = m_Context->format();
+    qDebug() << format.majorVersion() << "  " << format.minorVersion();
 
     m_Context->makeCurrent(this);
 
+
     gl = m_Context->versionFunctions<QOpenGLFunctions_3_0>();
+
     if(!gl)
     {
         exit(1);
     }
+
     gl->initializeOpenGLFunctions();
+
 
     gl->glShadeModel(GL_SMOOTH);
     gl->glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
@@ -65,7 +79,10 @@ PlotWindow::PlotWindow(std::vector<std::pair<Point, vanim::comp> >& vec, QWindow
 
     QImage img;
     if(!img.load("point.png"))
+    {
+        std::cout << "ERROR: Could not find \"point.png\"\n";
         exit(1);
+    }
 
     QImage gltex = QGLWidget::convertToGLFormat(img);
 
